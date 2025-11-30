@@ -1,0 +1,62 @@
+{% extends 'core/layout/base.html' %}
+{% load static %}
+
+{% block css %}
+  {{ block.super }}
+  <link rel="stylesheet" href="{% static 'core/css/miperfil.css' %}">
+{% endblock %}
+
+{% block contenido %}
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-avatar">
+      <!-- Placeholder para foto de perfil -->
+      <img src="{% static 'core/imgs/perfil.png' %}" alt="Avatar" class="avatar-img">
+    </div>
+    <div class="profile-details">
+      <div class="profile-row">
+        <div class="profile-label">Primer Nombre:</div>
+        <div class="profile-value" id="p_nombre"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Segundo Nombre:</div>
+        <div class="profile-value" id="s_nombre"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Primer Apellido:</div>
+        <div class="profile-value" id="p_apellido"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Segundo Apellido:</div>
+        <div class="profile-value" id="s_apellido"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">RUT:</div>
+        <div class="profile-value" id="rut"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Teléfono:</div>
+        <div class="profile-value" id="telefono"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Dirección:</div>
+        <div class="profile-value" id="direccion"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Fecha de Nacimiento:</div>
+        <div class="profile-value" id="fecha_nacimiento"></div>
+      </div>
+      <div class="profile-row">
+        <div class="profile-label">Email:</div>
+        <div class="profile-value" id="email"></div>
+      </div>
+    </div>
+  </div>
+  <div class="profile-actions">
+    <button id="btnLogout" class="btn-logout">Cerrar Sesión</button>
+  </div>
+</div>
+
+<script type="module" src="{% static 'core/js/sdk_firebase.js' %}"></script>
+<script type="module" src="{% static 'core/js/miperfil.js' %}"></script>
+{% endblock %}

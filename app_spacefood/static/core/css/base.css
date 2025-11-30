@@ -1,0 +1,922 @@
+/* carrito.css */
+
+/* ===== Base global styles ===== */
+html,
+body {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+  font-family: 'Orbitron', sans-serif;
+  background-image: url("/static/core/imgs/space3.gif");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
+  position: relative;
+  height: 100%;
+}
+
+/* Empujar el footer al final */
+main.flex-fill {
+  flex: 1 0 auto;
+}
+
+main {
+  flex: 1;
+}
+
+/* ===== Navbar ===== */
+.navbar {
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  z-index: 1000;
+}
+
+.navbar .container-fluid {
+  padding: 0;
+  margin: 0;
+}
+
+.navbar-toggler {
+  border: none;
+  padding: 0.25rem 0.75rem;
+  margin-left: 1rem;
+}
+
+/* Cuando el collapse está abierto */
+.collapse.show {
+  position: absolute;
+  z-index: 1000;
+}
+
+.navbar-collapse {
+  z-index: 1000;
+}
+
+.navbar-collapse .navbar-nav li {
+  border: none !important;
+}
+
+/* Enlaces de navegación */
+.navbar-nav .nav-link {
+  color: #fff;
+  padding: 0.75rem 1rem;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.navbar-nav li a {
+  color: #fff;
+  padding: 0.875rem 1rem;
+  text-decoration: none;
+}
+
+/* Logo dentro del navbar */
+.navbar-brand {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  padding: 0 1.25rem;
+  margin: 0;
+}
+
+.navbar-brand .img-logo {
+  height: 2rem;
+}
+
+/* Responsive: asegurar que el collapse cubra todo */
+@media (max-width: 61.9375rem) {
+  .navbar-collapse {
+    position: static !important;
+    width: 100%;
+  }
+
+  .collapse.navbar-collapse .navbar-nav {
+    justify-content: center;
+  }
+}
+
+.navbar .user-icon {
+  font-size: 1.2rem;
+  margin: 0.625rem;
+  line-height: 1; 
+}
+
+.navbar-nav .nav-item.ms-lg-auto .nav-link:hover .navbar-text,
+.navbar-nav .nav-item.ms-lg-auto .nav-link:hover .user-icon {
+  color: #00ffe7 !important;
+  cursor: pointer;
+}
+
+
+/* 1) Por defecto “Quienes somos” brilla de fondo */
+.navbar-nav .nav-link.quienes-somos {
+  background-color: #009e8e !important;
+  color: #ffffff !important;
+}
+
+/* 2) Al hacer hover, igual: */
+.navbar-nav .nav-link.quienes-somos:hover {
+  background-color: transparent !important;
+  color: #00ffe7 !important;
+  text-shadow: 0 0 0.5rem rgba(0, 255, 231, 0.7);
+}
+
+/* 3) Cuando está ACTIVE, quita el fondo y pon texto neón */
+.navbar-nav .nav-link.quienes-somos.active {
+  background-color: transparent !important;
+  color: #00ffe7 !important;
+  text-shadow: 0 0 0.5rem rgba(0, 255, 231, 0.7);
+}
+
+.navbar-nav .nav-link:hover .navbar-text,
+.navbar-nav .nav-link:hover .user-icon,
+.navbar-nav .nav-link.active .navbar-text,
+.navbar-nav .nav-link.active .user-icon,
+.navbar-nav .nav-link:hover,
+.navbar-nav .nav-link.active {
+  color: #00ffe7 !important;
+  text-shadow: 0 0 0.5rem rgba(0,255,231,0.7) !important;
+}
+
+/* ===== Footer ===== */
+footer {
+  flex-shrink: 0;
+}
+
+.footer-color {
+  background-color: #000000b9;
+  padding: 2rem 0;
+}
+
+footer h2 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 1rem;
+}
+
+footer p,
+footer a {
+  font-size: 0.875rem;
+  color: #fff;
+  margin: 0.25rem 0;
+}
+
+footer a.btn {
+  font-size: 0.875rem;
+}
+
+/* Carrito de compras */
+#cartDrawer {
+  position: fixed;
+  top: 0;
+  right: -100%;
+  width: 60%;      
+  max-width: 30rem;
+  height: 100%;
+  background-color: rgba(255,255,255,0.98);
+  box-shadow: -0.25rem 0 0.75rem rgba(0,0,0,0.3);
+  transition: right 0.3s ease;
+  z-index: 2000;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+}
+
+#cartDrawer.open {
+  right: 0;
+}
+
+#cartDrawer header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.0625rem solid #ddd;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+#cartDrawer .close-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+/* z-index para que el modal siempre quede por encima */
+.modal-backdrop { z-index: 1050 !important; }
+.modal          { z-index: 1060 !important; }
+
+/* ==============================
+   Estilos “CyNeón” para el Carrito
+   ============================== */
+
+/* Contenedor del carrito */
+#cartDrawer {
+  background: rgba(0, 0, 0, 0.75);
+  border: 0.0625rem solid #00c6b2;
+  border-radius: 0.9375rem;
+  box-shadow: 0 0 1.25rem rgba(0, 255, 231, 0.4);
+  transition: right 0.3s ease, box-shadow 0.3s ease;
+  padding: 1.5rem;
+}
+
+/* Cuando aparece */
+#cartDrawer.open {
+  box-shadow: 0 0 1.875rem rgba(0, 255, 231, 0.6);
+}
+
+/* Encabezado */
+#cartDrawer header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 0.0625rem solid #00c6b2;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+#cartDrawer header h5 {
+  color: #00ffe7;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  font-size: 1rem;
+  text-shadow: 0 0 0.625rem rgba(0, 255, 231, 0.7);
+}
+
+#cartDrawer .close-btn {
+  color: #ff0000;
+  font-size: 1.4rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+#cartDrawer .close-btn:hover {
+  transform: scale(1.2);
+  color: #ff6666;
+}
+
+/* Lista de items */
+.cart-items {
+  flex: 1;
+  overflow-y: auto;
+}
+
+.cart-items .cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem;
+  border-bottom: 0.0625rem solid rgba(0, 198, 178, 0.3);
+  transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.cart-items .cart-item img {
+  width: 3rem;
+  height: 3rem;
+  object-fit: cover;
+  border-radius: 0.5rem;
+  margin-right: 0.75rem;
+}
+
+.cart-items .item-info {
+  flex: 1;
+  color: #fff;
+  font-size: 0.875rem;
+}
+
+.cart-items .item-actions button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1rem;
+  color: #ffcc00;
+  margin-left: 0.5rem;
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+
+.cart-items .item-actions button:hover {
+  transform: scale(1.2);
+  color: #00ffe7;
+}
+
+/* Resumen de totales */
+#cartSummary {
+  border-top: 0.0625rem solid #00c6b2;
+  margin-top: 1rem;
+  padding-top: 1rem;
+}
+
+#cartSummary .d-flex strong {
+  color: #00ffe7;
+  font-size: 1rem;
+  text-shadow: 0 0 0.5rem rgba(0, 255, 231, 0.7);
+}
+
+#cartSummary .d-flex span {
+  color: #fff;
+  font-size: 1rem;
+}
+
+/* Botones principales en carrito */
+#cartDrawer footer .btn-primary {
+  background: linear-gradient(135deg, #00c6b250, #00ffe750);
+  border: 0.0625rem solid #00c6b2;
+  border-radius: 2rem;
+  padding: 0.75rem;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  transition: box-shadow 0.3s ease;
+}
+
+#cartDrawer footer .btn-primary:hover {
+  background: #00c6b2;
+  box-shadow: 0 0 1.25rem rgba(0, 255, 231, 0.7);
+}
+
+/* Overlay */
+#cartOverlay {
+  background: rgba(0, 0, 0, 0.6);
+}
+
+#shipMethodModal .modal-dialog,
+#paymentMethodModal .modal-dialog {
+  max-width: 450px;
+  margin: auto;
+}
+#shipMethodModal .modal-content,
+#paymentMethodModal .modal-content {
+  background: rgba(0, 0, 0, 0.85);
+  border: 0.125rem solid #00c6b2;
+  border-radius: 1rem;
+  box-shadow: 0 0 1.875rem rgba(0, 255, 231, 0.4);
+  overflow: hidden;
+}
+
+/* Header */
+#shipMethodModal .modal-header,
+#paymentMethodModal .modal-header {
+  border-bottom: none;
+  background: #00000099;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+#shipMethodModal .modal-header .modal-title,
+#paymentMethodModal .modal-header .modal-title {
+  color: #00ffe7;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+  margin: 0;
+}
+#shipMethodModal .modal-header .btn-close,
+#paymentMethodModal .modal-header .btn-close {
+  filter: invert(100%);
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#shipMethodModal .modal-header .btn-close:hover,
+#paymentMethodModal .modal-header .btn-close:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Body */
+#shipMethodModal .modal-body,
+#paymentMethodModal .modal-body {
+  padding: 1.5rem 1.5rem 0.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Footer */
+#shipMethodModal .modal-footer,
+#paymentMethodModal .modal-footer {
+  background: rgba(0, 0, 0, 0.85);
+  border-top: none;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+#shipMethodModal .modal-footer .btn-secondary,
+#paymentMethodModal .modal-footer .btn-secondary {
+  background: none;
+  border: 0.125rem solid #ff4d4d;
+  color: #ff4d4d;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+#shipMethodModal .modal-footer .btn-secondary:hover,
+#paymentMethodModal .modal-footer .btn-secondary:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(255, 77, 77, 0.6);
+}
+#shipMethodModal .modal-footer .btn-primary,
+#paymentMethodModal .modal-footer .btn-primary {
+  background: none;
+  border: 0.125rem solid #00c6b2;
+  color: #00c6b2;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+#shipMethodModal .modal-footer .btn-primary:hover,
+#paymentMethodModal .modal-footer .btn-primary:hover {
+  background: #00c6b2;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+}
+
+/* Radios y labels idénticos */
+#shipMethodModal .form-check,
+#paymentMethodModal .form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+#shipMethodModal .form-check-input,
+#paymentMethodModal .form-check-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0.125rem solid #00c6b2;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+#shipMethodModal .form-check-input:checked,
+#paymentMethodModal .form-check-input:checked {
+  background: radial-gradient(circle at center, #00ffe7 0%, #00c6b2 70%);
+  border-color: #00ffe7;
+}
+#shipMethodModal .form-check-input:focus,
+#paymentMethodModal .form-check-input:focus {
+  outline: none;
+  box-shadow: 0 0 0.375rem rgba(0, 255, 231, 0.5);
+}
+#shipMethodModal .form-check-label,
+#paymentMethodModal .form-check-label {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+#shipMethodModal .form-check-label:hover,
+#paymentMethodModal .form-check-label:hover {
+  color: #00ffe7;
+}
+
+/* Ambos botones con borde y texto blancos */
+#shipMethodBtn,
+#paymentMethodBtn {
+  color: #ffffff !important;
+  border-color: #ffffff !important;
+  background: none !important;
+}
+
+/* Hover compartido: leve neón cyan */
+#shipMethodBtn:hover,
+#paymentMethodBtn:hover {
+  background-color: transparent !important;
+  color: #00ffe7 !important;
+  border-color: #00ffe7 !important;
+}
+
+
+/* ==============================
+   Estilos mejorados para el modal
+   “Método de despacho”
+   ============================== */
+
+/* Fondo general y contenedor */
+#shipMethodModal .modal-dialog {
+  max-width: 450px;
+  margin: auto;
+}
+
+#shipMethodModal .modal-content {
+  background: rgba(0, 0, 0, 0.85);      
+  border: 0.125rem solid #00c6b2;     
+  border-radius: 1rem;
+  box-shadow: 0 0 1.875rem rgba(0, 255, 231, 0.4);
+  overflow: hidden;
+}
+
+/* Encabezado */
+#shipMethodModal .modal-header {
+  border-bottom: none; 
+  background: #00000099; 
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+/* Título con fuente Orbitron y resplandor */
+#shipMethodModal .modal-header .modal-title {
+  color: #00ffe7;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+  margin: 0;
+}
+
+/* Botón close (×) */
+#shipMethodModal .modal-header .btn-close {
+  filter: invert(100%); /* Icono blanco */
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+#shipMethodModal .modal-header .btn-close:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+/* Cuerpo del modal */
+#shipMethodModal .modal-body {
+  padding: 1.5rem 1.5rem 0.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+/* Cada opción de “form-check” (radio) */
+#shipMethodModal .form-check {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Radio customizado */
+#shipMethodModal .form-check-input {
+  appearance: none;
+  -webkit-appearance: none;
+  background: transparent;
+  border: 0.125rem solid #00c6b2;
+  width: 1.25rem;
+  height: 1.25rem;
+  border-radius: 50%;
+  position: relative;
+  margin-right: 0.75rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease;
+}
+
+#shipMethodModal .form-check-input:checked {
+  background: radial-gradient(circle at center, #00ffe7 0%, #00c6b2 70%);
+  border-color: #00ffe7;
+}
+
+#shipMethodModal .form-check-input:focus {
+  outline: none;
+  box-shadow: 0 0 0.375rem rgba(0, 255, 231, 0.5);
+}
+
+/* Etiqueta del radio (texto) */
+#shipMethodModal .form-check-label {
+  color: #fff;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+#shipMethodModal .form-check-label:hover {
+  color: #00ffe7;
+}
+
+/* Paneles de contenido (domicilio / tienda) */
+#panelDomicilio,
+#panelTienda {
+  padding: 1rem;            
+  background: rgba(255, 255, 255, 0.05);
+  border: 0.0625rem solid rgba(0, 198, 178, 0.3);
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+/* Label de input dentro del panel */
+#panelDomicilio label,
+#panelTienda label {
+  display: block;
+  margin-bottom: 0.5rem;  
+  color: #00ffe7;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+/* Estilos para input de texto y select */
+#shipMethodModal .form-control,
+#shipMethodModal .form-select {
+  width: 100%;
+  box-sizing: border-box;  
+  background: rgba(0, 0, 0, 0.6);
+  border: 0.125rem solid #00c6b2;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 0.9rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#shipMethodModal .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+#shipMethodModal .form-control:focus,
+#shipMethodModal .form-select:focus {
+  border-color: #00ffe7;
+  outline: none;
+  box-shadow: 0 0 0.5rem rgba(0, 255, 231, 0.4);
+}
+
+/* Sincronizar que el “panel” solo aparezca cuando corresponda */
+#panelDomicilio.d-none,
+#panelTienda.d-none {
+  display: none !important;
+}
+
+/* Pie de modal (footer) */
+#shipMethodModal .modal-footer {
+  background: rgba(0, 0, 0, 0.85);
+  border-top: none;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: center;  
+  gap: 0.5rem;       
+}
+
+/* Botones “Cancelar” y “Confirmar” */
+#shipMethodModal .btn-secondary {
+  background: none;
+  border: 0.125rem solid #ff4d4d;
+  color: #ff4d4d;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  margin: 0;
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#shipMethodModal .btn-secondary:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(255, 77, 77, 0.6);
+}
+
+/* Botón “Confirmar”: degradado neón cian→verde */
+#shipMethodModal .btn-primary {
+  background: none;
+  border: 0.125rem solid #00c6b2;
+  color: #00c6b2;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  margin: 0; 
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+
+#shipMethodModal .btn-primary:hover {
+  background: #00c6b2;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+}
+
+/* Adaptaciones responsivas */
+@media (max-width: 576px) {
+  #shipMethodModal .modal-dialog {
+    max-width: 90%;
+  }
+  #shipMethodModal .modal-header,
+  #shipMethodModal .modal-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  #shipMethodModal .btn-primary,
+  #shipMethodModal .btn-secondary {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+  #shipMethodModal .btn-secondary {
+    margin-right: 0;
+  }
+  /* Reducimos ligeramente padding en el cuerpo */
+  #shipMethodModal .modal-body {
+    padding: 1rem 1rem 0.5rem;
+  }
+}
+
+#cartDrawer .cart-item .flex-grow-1 {
+  color: #ffffff;
+}
+
+
+.qty-btn {
+  background: linear-gradient(135deg, #00c6b250, #00ffe750);
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #00c6b2;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: box-shadow 0.2s ease;
+}
+
+/* Ajuste de tamaño: botones cuadrados */
+.qty-btn.btn-sm {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.remove-btn {
+  background: linear-gradient(135deg, #ff4d4d54, #ff000056);
+  color: #fff;
+  font-weight: bold;
+  border: 1px solid #cc0000;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  transition: box-shadow 0.2s ease;
+}
+
+.remove-btn.btn-sm {
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+}
+
+.qty-btn:hover {
+  background: #00c6b2;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+}
+
+.remove-btn:hover {
+    background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(255, 77, 77, 0.6);
+}
+
+#openCartBtn {
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+#openCartBtn:hover {
+  background-color: transparent !important;
+  color: #00ffe7 !important;
+  border-color: #00ffe7 !important;
+}
+
+#cartItemsContainer p {
+  color: #ffffff;
+}
+
+/* ==============================
+   Modal: Comprobante de Transferencia
+   ============================== */
+#transferProofModal .modal-dialog {
+  max-width: 450px;
+  margin: auto;
+}
+
+#transferProofModal .modal-content {
+  background: rgba(0, 0, 0, 0.85);
+  border: 0.125rem solid #00c6b2;
+  border-radius: 1rem;
+  box-shadow: 0 0 1.875rem rgba(0, 255, 231, 0.4);
+  overflow: hidden;
+}
+
+#transferProofModal .modal-header {
+  border-bottom: none;
+  background: #00000099;
+  padding: 1rem 1.5rem;
+  position: relative;
+}
+
+#transferProofModal .modal-header .modal-title {
+  color: #00ffe7;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 1.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05rem;
+  text-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+  margin: 0;
+}
+
+#transferProofModal .modal-header .btn-close {
+  filter: invert(100%);
+  opacity: 0.8;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+#transferProofModal .modal-header .btn-close:hover {
+  opacity: 1;
+  transform: scale(1.2);
+}
+
+#transferProofModal .modal-body {
+  padding: 1.5rem 1.5rem 0.5rem;
+  background: rgba(0, 0, 0, 0.75);
+  color: #fff;
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+#transferProofModal .modal-body input[type="file"] {
+  background: rgba(0,0,0,0.6);
+  border: 0.125rem solid #00c6b2;
+  color: #fff;
+  border-radius: 0.5rem;
+  padding: 0.5rem;
+}
+
+#transferProofModal .modal-footer {
+  background: rgba(0, 0, 0, 0.85);
+  border-top: none;
+  padding: 0.75rem 1.5rem;
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+#transferProofModal .modal-footer .btn-secondary {
+  background: none;
+  border: 0.125rem solid #ff4d4d;
+  color: #ff4d4d;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+#transferProofModal .modal-footer .btn-secondary:hover {
+  background: #ff4d4d;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(255, 77, 77, 0.6);
+}
+
+#transferProofModal .modal-footer .btn-primary {
+  background: none;
+  border: 0.125rem solid #00c6b2;
+  color: #00c6b2;
+  font-family: 'Orbitron', sans-serif;
+  text-transform: uppercase;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  transition: background 0.2s ease, color 0.2s ease, box-shadow 0.2s ease;
+}
+#transferProofModal .modal-footer .btn-primary:hover {
+  background: #00c6b2;
+  color: #fff;
+  box-shadow: 0 0 0.75rem rgba(0, 255, 231, 0.7);
+}
+
+/* Adaptaciones responsivas */
+@media (max-width: 576px) {
+  #transferProofModal .modal-dialog {
+    max-width: 90%;
+  }
+  #transferProofModal .modal-header,
+  #transferProofModal .modal-body {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+  #transferProofModal .modal-footer .btn-secondary,
+  #transferProofModal .modal-footer .btn-primary {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.5rem;
+  }
+}

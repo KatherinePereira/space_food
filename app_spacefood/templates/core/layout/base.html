@@ -1,0 +1,375 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="is-authenticated" content="{{ request.session.p_nombre|yesno:'true,false' }}">
+
+    <title>{% block title %} SpaceFood {% endblock %}</title>
+
+    {% block css %}
+    <link rel="stylesheet" href="{% static 'core/css/base.css' %}">
+    <style>
+      .nav-link.active {
+        color: #00cfff !important;
+        font-weight: bold;
+      }
+    </style>
+    {% endblock %}
+
+    {% block extra %}{% endblock %}
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" crossorigin="anonymous" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  </head>
+
+  <body>
+        <!-- Overlay -->
+    <div id="cartOverlay"></div>
+
+    <!-- Cart Drawer -->
+    <aside id="cartDrawer" aria-hidden="true">
+      <header>
+        <h5>Tu Carrito</h5>
+        <button class="close-btn" id="closeCartBtn" aria-label="Cerrar carrito">
+          &times;
+        </button>
+      </header>
+      <div class="cart-items flex-fill" id="cartItemsContainer">
+        <p class="text-center mt-4">Tu carrito está vacío.</p>
+      </div>
+      <!-- Botón de selección de método de despacho -->
+      <div class="mb-3 text-center">
+        <button
+          type="button"
+          id="shipMethodBtn"
+          class="btn btn-outline-light"
+          data-bs-toggle="modal"
+          data-bs-target="#shipMethodModal">
+          Seleccionar método de despacho
+        </button>
+      </div>
+      <!-- Botón de selección de método de pago -->
+      <div class="mb-3 text-center">
+        <button
+          type="button"
+          id="paymentMethodBtn"
+          class="btn btn-outline-light"
+          data-bs-toggle="modal"
+          data-bs-target="#paymentMethodModal">
+          Seleccionar método de pago
+        </button>
+      </div>
+      <!-- Nuevo: resumen de totales -->
+      <div class="p-3 border-top" id="cartSummary">
+        <div class="d-flex justify-content-between">
+          <strong>Total:</strong>
+          <span id="cartTotalPrice">$0.00</span>
+        </div>
+      </div>
+      <!-- Dentro de tu aside#cartDrawer -->
+      <footer class="mt-auto">
+        <button id="finalizarCompraBtn" class="btn btn-primary w-100">Finalizar Compra</button>
+      </footer>
+    </aside>
+    {% with request.resolver_match.url_name as current_url %}
+    <nav class="navbar navbar-expand-lg navbar-dark bg-black bg-opacity-50 py-2 shadow-sm">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="{% url 'home' %}">
+          <img src="{% static 'core/imgs/logo.png' %}" class="img-logo" alt="Logo" />
+        </a>
+
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav align-items-center w-100">
+            {% if not request.session.p_nombre %}
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'comidas' %}active{% endif %}" href="{% url 'comidas' %}">Comidas</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'register' %}active{% endif %}" href="{% url 'register' %}">Regístrate</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'login' %}active{% endif %}" href="{% url 'login' %}">Login</a>
+              </li>
+              <li class="nav-item ms-auto">
+                <button id="openCartBtn" class="btn btn-outline-light position-relative">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                </button>
+              </li>
+              <li class="nav-item" style="margin-left:10px">
+                  <a class="nav-link quienes-somos {% if current_url == 'quienes_somos' %}active{% endif %}"
+                    href="{% url 'quienes_somos' %}">
+                    Quienes somos
+                  </a>
+                </li>
+
+            {% else %}
+              <!-- Repite para cada grupo de tipo_usuario como hiciste, pero con {% if current_url == '...' %}active{% endif %} -->
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'home' %}active{% endif %}" href="{% url 'home' %}">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link {% if current_url == 'comidas' %}active{% endif %}" href="{% url 'comidas' %}">Comidas</a>
+              </li>
+              {% if request.session.tipo_usuario == 2 %}
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'panelcomidas' %}active{% endif %}" href="{% url 'panelcomidas' %}">Panel Comidas</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'crearproducto' %}active{% endif %}" href="{% url 'crearproducto' %}">Crear Productos</a>
+                </li>
+              {% elif request.session.tipo_usuario == 3 or request.session.tipo_usuario == 4 %}
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'panelcocinero' %}active{% endif %}" href="{% url 'panelcocinero' %}">Panel cocinero</a>
+                </li>
+              {% elif request.session.tipo_usuario == 5 %}
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'panelusuarios' %}active{% endif %}" href="{% url 'panelusuarios' %}">Panel usuarios</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'panelcocinero' %}active{% endif %}" href="{% url 'panelcocinero' %}">Panel cocinero</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'crearproducto' %}active{% endif %}" href="{% url 'crearproducto' %}">Crear Productos</a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link {% if current_url == 'panelcomidas' %}active{% endif %}" href="{% url 'panelcomidas' %}">Panel Comidas</a>
+                </li>
+              {% endif %}
+              <li class="nav-item ms-auto">
+                <a class="nav-link d-flex align-items-center p-0 {% if current_url == 'miperfil' %}active{% endif %}" href="{% url 'miperfil' %}">
+                  <span class="navbar-text me-1">Hola, {{ request.session.p_nombre }}</span>
+                  <i class="fas fa-user user-icon"></i>
+                </a>
+              </li>
+              <li class="nav-item" style="margin-left:10px">
+                <button id="openCartBtn" class="btn btn-outline-light position-relative">
+                  <i class="fas fa-shopping-cart"></i>
+                  <span class="badge bg-danger rounded-pill position-absolute top-0 start-100 translate-middle">0</span>
+                </button>
+              </li>
+              {# Cuando NO está logueado, empujamos carrito+“Quienes somos” al extremo derecho #}
+                <li class="nav-item" style="margin-left:10px">
+                  <a class="nav-link quienes-somos {% if current_url == 'quienes_somos' %}active{% endif %}"
+                    href="{% url 'quienes_somos' %}">
+                    Quienes somos
+                  </a>
+                </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    {% endwith %}
+
+    <main class="flex-fill">
+      {% block contenido %}{% endblock %}
+    </main>
+    
+    <!-- footer -->
+    <footer class="footer-color">
+      <section>
+        <div class="container text-center mt-footer">
+          <div class="row justify-content-between">
+            <div class="col-md-4">
+              <h2 class="text-white my-3 mt-4">Contactanos</h2>
+              <p class=" bi bi-telephone-fill text-white">  +56999887766</p>
+              <p class=" bi bi-envelope-at-fill text-white"> spacefood@gmail.com</p>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4 mt-5 mb-5 img-fluid ">
+              <a href="{% url 'home' %}"><img src="{% static 'core/imgs/logo.png' %}" alt=""
+                width="200"></a>
+            </div>
+            <div class="col-md-4 text-white">
+              <h2 class="my-3 mt-4">Redes</h2>
+              <a class="btn btn-secondary bi bi-whatsapp my-1" href=""> WhatsApp</a>
+              <a class="btn btn-secondary bi bi-facebook my-1" href=""> Facebook</a>
+              <br/>
+              <a class="btn btn-secondary bi bi-instagram mt-1 my-5" href=""> Instagram</a>
+              <br>
+            </div>
+          <div style="border-top: 2px solid white;" class="">
+              <p class="bi bi-c-circle text-white mt-3"> Coryrigth @SpaceFood</p>
+          </div> 
+          </div>
+        </div>
+      </section>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+      // Toggle cart drawer
+      const openCartBtn = document.getElementById('openCartBtn');
+      const closeCartBtn = document.getElementById('closeCartBtn');
+      const cartDrawer = document.getElementById('cartDrawer');
+      const cartOverlay = document.getElementById('cartOverlay');
+
+      function openCart() {
+        cartDrawer.classList.add('open');
+        cartOverlay.classList.add('show');
+      }
+      function closeCart() {
+        cartDrawer.classList.remove('open');
+        cartOverlay.classList.remove('show');
+      }
+
+      openCartBtn.addEventListener('click', openCart);
+      closeCartBtn.addEventListener('click', closeCart);
+      cartOverlay.addEventListener('click', closeCart);
+    </script>
+
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js" type="module"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js" type="module"></script>
+
+    <!-- Alertas sweetalert2 -->
+    <script type="text/template" id="django-messages-template">
+      [
+        {% for message in messages %}
+          {
+            "tags": "{{ message.tags }}",
+            "text": "{{ message|escapejs }}"
+          }{% if not forloop.last %},{% endif %}
+        {% endfor %}
+      ]
+    </script>
+
+    <script>
+      window.djangoMessages = JSON.parse(document.getElementById('django-messages-template').textContent);
+    </script>
+
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('status');
+        if (status === 'approved') {
+          Swal.fire('¡Compra exitosa!', 'Gracias por tu compra.', 'success');
+        } else if (status === 'failed') {
+          Swal.fire('Algo salió mal', 'Tu pago no se completó.', 'error');
+        } else if (status === 'pending') {
+          Swal.fire('Pago pendiente', 'Tu pago está pendiente de aprobación.', 'info');
+        }
+        // opcional: limpiar el query string para que no vuelva a saltar al refrescar
+        if (status) {
+          history.replaceState({}, '', window.location.pathname);
+        }
+      });
+    </script>
+
+    <!-- Modal de carrito de compras -->
+    <div class="modal fade" id="shipMethodModal" tabindex="-1" aria-labelledby="shipMethodModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered square-modal-dialog">
+        <div class="modal-content square-modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="shipMethodModalLabel">Método de despacho</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+          </div>
+          <div class="modal-body">
+
+            <!-- Opciones principales -->
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="shippingMethod" id="optDomicilio" value="domicilio">
+              <label class="form-check-label" for="optDomicilio">Despacho a domicilio</label>
+            </div>
+            <div class="form-check mb-3">
+              <input class="form-check-input" type="radio" name="shippingMethod" id="optTienda" value="tienda" checked>
+              <label class="form-check-label" for="optTienda">Retiro en tienda</label>
+            </div>
+
+              <!-- Panel Despacho a domicilio -->
+            <div id="panelDomicilio" class="d-none mb-3">
+              <label for="direccionInput" class="form-label">Ingrese su dirección de despacho:</label>
+              <!-- value se llenará por JS -->
+              <input type="text" class="form-control" id="direccionInput" placeholder="Calle, número, ciudad...">
+            </div>
+
+            <!-- Panel Retiro en tienda -->
+            <div id="panelTienda" class="d-none mb-3">
+              <label class="form-label">Seleccione su tienda más cercana:</label>
+              <select class="form-select" id="tiendaSelect">
+                <option value="">-- Cargando tiendas... --</option>
+              </select>
+            </div>
+
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" id="confirmShipMethod" class="btn btn-primary">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Método de pago -->
+    <div class="modal fade" id="paymentMethodModal" tabindex="-1" aria-labelledby="paymentMethodModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered square-modal-dialog">
+        <div class="modal-content square-modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="paymentMethodModalLabel">Método de pago</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="optMercadoPago" checked>
+              <label class="form-check-label" for="optMercadoPago">Mercado Pago (débito/crédito)</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="paymentMethod" id="optTransferencia">
+              <label class="form-check-label" for="optTransferencia">Transferencia bancaria</label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button id="confirmPaymentMethod" class="btn btn-primary">Confirmar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal: Comprobante de Transferencia -->
+    <div class="modal fade" id="transferProofModal" tabindex="-1" aria-labelledby="transferProofModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-black bg-opacity-85 border border-info rounded-2xl shadow-lg">
+          <div class="modal-header border-0">
+            <h5 class="modal-title text-cyan-400" id="transferProofModalLabel">Sube el comprobante</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+          <div class="modal-body text-white">
+            <p>Selecciona la imagen del comprobante de la transferencia:</p>
+            <input type="file" id="transferProofInput" accept="image/*" class="form-control mb-3"/>
+          </div>
+          <div class="modal-footer border-0 justify-content-center gap-2">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+              Cancelar
+            </button>
+            <button id="confirmTransferProofBtn" class="btn btn-primary">
+              Enviar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    {% block js %}
+      <script src="{% static 'core/js/sweetalerts.js' %}"></script>
+      <script src="{% static 'core/js/carrito.js' %}"></script>
+    {% endblock %}
+
+  </body>
+
+</html>
