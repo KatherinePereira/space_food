@@ -3,7 +3,7 @@
 > Plataforma de e-commerce y gestión de pedidos para un restaurante temático de comida rápida espacial. 
 
 ## 📖 Sobre el Proyecto
-Space Food es una aplicación web integral desarrollada como proyecto para la asignatura de **Integración de Plataformas**, durante el **4to semestre de mi carrera de Ingeniería en Informática**. Simula la operación completa de una cadena de comida rápida (estilo McDonald's, pero de temática espacial), ofreciendo tanto la interfaz de compra para clientes como paneles administrativos y operativos para el personal. El sistema destaca por la integración de múltiples servicios, incluyendo pasarelas de pago y gestión en tiempo real.
+Space Food es una aplicación web integral desarrollada como proyecto para la asignatura de **Integración de Plataformas**, durante el **5to semestre de mi carrera de Ingeniería en Informática**. Simula la operación completa de una cadena de comida rápida (estilo McDonald's, pero de temática espacial), ofreciendo tanto la interfaz de compra para clientes como paneles administrativos y operativos para el personal. El sistema destaca por la integración de múltiples servicios, incluyendo pasarelas de pago y gestión en tiempo real.
 
 ## ✨ Características Principales
 * **E-commerce Completo:** Catálogo de productos ("comidas"), carrito de compras interactivo y checkout.
